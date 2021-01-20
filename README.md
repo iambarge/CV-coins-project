@@ -43,7 +43,7 @@ An example of the procedure and possible results is as follows:
 <p align="center">
   <img src="src/fig_1.png"><br>
   <i>Color matching of 1 and 2 Euro coins in HSV colorspace thresholding the Saturation channel. From left to right: 1 and 2 Euro coins Saturation channel; images thresholded with Otsu’s method; expected result for the logic XOR of a match.</i>
-<br><br>
+<br><br><br>
   <img src="src/fig_2.png"><br>
   <i>Examples of XORs resulting from non matches.</i>
 </p>
@@ -66,4 +66,44 @@ SIFT, SURF or ORB features (accordingly to the selection in the main method) are
 
 Once the features are extracted from the detected coin, they are matched with the ones extracted from the reference coins of the corresponding color (i.e. copper or golden). All matches are refined keeping only the ones with distance lower than the threshold value `max_distance` and consistent with the homography found by `cv::findHomography` with the RANSAC method. The final estimated label for the detected coin is set equal to the label of the reference coin with the highest number of refined matches. Note that if the number of `refined_matches` is lower then the threshold value uncertainty th, the detected coin is labelled as 'no coin' (−1).
 
-## Classification Results
+## Final Results
+### Coin Detection
+The circle Hough transform was expected to present some problems working on occluded coins and non vertical viewpoint, however, with the introduction of the trackbars, almost all the coins from each of the proposed images can be correctly segmented from the surroundings. In particular, excluding the scene in file 'img2.jpg' where there are uncountably many coins, 48 coins over 49 are detected from the provided images without introducing any false positive.
+<p align="center">
+  <img src="src/fig_5.png"><br>
+  <i>Results of the coin detection with the Hough transform. The coin circled in red was not
+detected (note that it can be segmented at the cost of introducing a false positive).</i>
+</p>
+
+### Color Based Classification
+The effectiveness of the preliminary color-based classification can be clearly appreciated referring to the confusion matrix of the 48 detected coins reported in Table 1. 
+<p align="center">
+  <img src="src/tab_1.png">
+</p>
+As expected, the critical points for this classifier are the quality of the detection and the handling of occluded coins. Indeed, if a coin is not perfectly segmented (e.g. due to viewpoint changes) or if two coins overlap, the corresponding thresholded image can be drastically different from what expected. Two examples of misclassification due to this behavior can be appreciated analyzing the following figures.
+<p align="center">
+  <br>
+  <img src="src/fig_6.png"><br>
+  <i>Misclassified coin due to severe occlusion.</i>
+<br><br>
+  <img src="src/fig_7.png"><br>
+  <i>Misclassified coin due to tilting.</i>
+</p>
+
+### Feature Based Classification
+As concerns the feature matching step, it is important noticing that, referring to the ORB features, keeping the same patch size for both the reference coin and the detected one yield to poor results in terms of matches. Therefore in the feature extraction step, even if they should be scale independent, the patch size and the edge threshold are adapted to the size of the detected coin, yielding to better results. \
+Finally, the overall results associated with the detection and classification of up-facing, not severely occluded (the number should be visible) Euro coins (including the ones from the scene in file 'img2.jpg') are summarized in the following tables.
+<p align="center">
+  <img src="src/tab_2.png">
+  <img src="src/tab_3.png">
+  <img src="src/tab_4.png">
+</p>
+
+Comparing the obtained results, the ORB features seem to perform better than the others and in particular 50 cent and 5 cent coins are the most likely to be correctly classified. However, it is clear that the feature matching approach does not guarantee the desired performace. This result was somehow expected looking at the obtained matches. In spite of the fact that the refined matches between same value coins are expected to be consistent and the ones from different value coins are not, the refined matches between same value coins do not seem to be distinguishable from the ones from different value coins, as it can be appreciated in the following example.
+<p align="center">
+  <img src="src/fig_8.png"><br>
+  <i>Examples of refined matches from ORB features.</i>
+</p>
+
+## Conclusions
+While the coin detection and color matching strategies yield to great results, it is not the case for feature matching. In future works, to improve the obtained results, the classification task could be faced with a bag of words approach.

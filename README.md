@@ -40,8 +40,10 @@ For each detected coin, the classification task is divided into two steps:
 ### Color Classification
 First of all, 1 and 2 Euro coins are instantly classified comparing the thresholded values of the Saturation channel from the HSV colorspace. In particular, the optimal threshold is obtained using the Otsu’s method and, in order to evaluate a match, a logic XOR is performed between the detected coin and a reference (1 or 2 Euro) coin. Finally, the two coins match if the mean color of the resulting logic XOR is lower than the color threshold value (selectable in the main method). Note that with this procedure even down facing coins can be classified!
 An example of the procedure and possible results is as follows:
-
-
+<p align="center">
+  <img src="http://s.4cdn.org/image/title/105.gif"><br>
+  <i>Some Links:</i>
+</p>
 
 
 

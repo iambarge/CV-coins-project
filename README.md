@@ -8,7 +8,8 @@ The primary purpose of this project is to develop a detector capable of finding 
 ### Project Organization
 ```
 .
-├── data/                                       : Contains all coins images 
+├── data/                                       : Contains all coins images
+├── src/                                        : Contains report images
 ├── CMakeLists.txt                              : CMake instructions list
 ├── coins.cpp                                   : Main routine
 ├── coins_toolbox.cpp                           : Coin class (/w Classification Code)

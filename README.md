@@ -41,9 +41,29 @@ For each detected coin, the classification task is divided into two steps:
 First of all, 1 and 2 Euro coins are instantly classified comparing the thresholded values of the Saturation channel from the HSV colorspace. In particular, the optimal threshold is obtained using the Otsu’s method and, in order to evaluate a match, a logic XOR is performed between the detected coin and a reference (1 or 2 Euro) coin. Finally, the two coins match if the mean color of the resulting logic XOR is lower than the color threshold value (selectable in the main method). Note that with this procedure even down facing coins can be classified!
 An example of the procedure and possible results is as follows:
 <p align="center">
-  <img src="http://s.4cdn.org/image/title/105.gif"><br>
-  <i>Some Links:</i>
+  <img src="src/fig_1.png"><br>
+  <i>Color matching of 1 and 2 Euro coins in HSV colorspace thresholding the Saturation channel. From left to right: 1 and 2 Euro coins Saturation channel; images thresholded with Otsu’s method; expected result for the logic XOR of a match.</i>
+<br><br>
+  <img src="src/fig_2.png"><br>
+  <i>Examples of XORs resulting from non matches.</i>
 </p>
 
+If the detected coin is not classified as 1 or 2 Euro then it should be a Euro cent one. Therefore a further color-based procedure is designed in order to distinguish between golden cents (50, 20, 10) and Copper ones (5, 2, 1). \
+As it can be observed in the following figure, in the a-channel of the Lab color space copper shines. 
+<p align="center">
+  <img src="src/fig_3.png"><br>
+  <i>Copper (top) and golden (bottom) cents a-channel and their respective thresholded version.</i>
+</p>
+Using this peculiar behavior, thresholding the a-channel of the detected coin (empirically selected value equal to 135), golden cents and Copper ones can be easily distinguished.
 
+### Template Matching
+After the color classification 1 and 2 euro coins should have been already classified and cents should be correctly divided by color (copper and golden). For the purpose of recognizing the correct label for a cent coin belonging to one of the two classes a feature matching approach is used. \
+SIFT, SURF or ORB features (accordingly to the selection in the main method) are extracted from the center part (70% of the coin radius) of each unclassified coin. The decision of excluding the outer part from the feature detection is given by the fact that all coins share a similar contour and a black background, therefore all the detected features along the borders would have been meaningless.
+<p align="center">
+  <img src="src/fig_4.png"><br>
+  <i>Example of SIFT, SURF and ORB features extracted from a 50 cent coin.</i>
+</p>
 
+Once the features are extracted from the detected coin, they are matched with the ones extracted from the reference coins of the corresponding color (i.e. copper or golden). All matches are refined keeping only the ones with distance lower than the threshold value `max_distance` and consistent with the homography found by `cv::findHomography` with the RANSAC method. The final estimated label for the detected coin is set equal to the label of the reference coin with the highest number of refined matches. Note that if the number of `refined_matches` is lower then the threshold value uncertainty th, the detected coin is labelled as 'no coin' (−1).
+
+## Classification Results

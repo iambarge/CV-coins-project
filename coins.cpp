@@ -1,10 +1,10 @@
 //
-//  coins.cpp
-//  coins
+// Copyright (c) 2019, Nicolò Bargellesi
 //
-//  Created by Nicolò Bargellesi on 27/06/2019.
+// This source code is licensed under the MIT-style license found in the
+// LICENSE file in the root directory of this source tree.
 //
-//
+
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
